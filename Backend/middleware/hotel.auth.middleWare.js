@@ -1,6 +1,7 @@
 import { jwt_secret } from "../config/env.js";
 import jwt from "jsonwebtoken";
 import hotels from "../models/hotels.model.js";
+import multer from "multer";
 
 const Hauthorize = async (req, res, next) => {
   try {
@@ -24,9 +25,14 @@ const Hauthorize = async (req, res, next) => {
       return res.status(401).json({ message: "Unauthorized: User not found" });
     }
 
+
+    const certificationLocalPath  = req.files?.
+
     // Attach user to request object
     req.user = user;
     next();
+
+
   } catch (error) {
     console.error("Authorization Error:", error.message);
     return res

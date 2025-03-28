@@ -24,34 +24,39 @@ const pusher = new Pusher({
   secret: process.env.PUSHER_APP_SECRET,
   cluster: process.env.PUSHER_APP_CLUSTER,
   useTLS: true,
-})
+});
 
 app.use("/api/v1/ngo", ngoRouter);
 app.use("/api/v1/hotel", hotelRouter);
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 app.get("/", (req, res) => res.send("API Running..."));
 
-app.post("/restregister", (req, res) => { });
+app.post("/restregister", (req, res) => {});
 
-app.post("/restlogin", (req, res) => { });
+app.post("/restlogin", (req, res) => {});
 app.get("/", (req, res) => res.send("Welcome to backend of foodbride"));
-app.get('/notification', (req, res) => {
-  res.sendFile(Path.join(__dirname, 'notification.html'));
+app.get("/notification", (req, res) => {
+  res.sendFile(Path.join(__dirname, "notification.html"));
 });
 
-app.post('/sent-notification', (req, res) => {
+app.post("/sent-notification", (req, res) => {
   const { message, recipient } = req.body;
-  pusher.trigger('notifications', 'new-notification', {
+  pusher.trigger("notifications", "new-notification", {
     message: message,
-    recipient: recipient
-  })
+    recipient: recipient,
+  });
   res.status(200).json({
     success: true,
-    message: 'Notification sent successfully',
+    message: "Notification sent successfully",
   });
-})
+});
 
 //const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
