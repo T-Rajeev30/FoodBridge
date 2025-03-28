@@ -2,7 +2,7 @@ import React from 'react'
 
 function Home() {
   return (
-    <div className=' h-auto bg-gradient-to-b from-white to-[#FEF5E9]'>
+    <div className=' h-auto bg-gradient-to-b pt-[5%] from-white to-[#FEF5E9] overflow-x-hidden shadow'>
         <div>
             <div className='flex items-center justify-center gap-10 mt-8'>
                 <div className=' bg-[url(/first.png)] w-[40%] h-[60vh] rounded-xl bg-cover bg-center flex items-end  p-3 ' >
@@ -63,36 +63,37 @@ function Home() {
                 </div>
             </div>
         </div>
-        <div className='bg-[#4e220a]'>
-            <div className='flex items-center justify-center gap-4'>
-                <div className='flex items-center justify-center flex-row gap-4 h-[5vw] w-[5vw] bg-white rounded-full'>
-                    <img src="" alt="" />
+        <div className='bg-[#4e220a] pt-10 pb-10'>
+            <div className='flex items-center justify-center gap-12'>
+                <div className='bg-[url(/fourth.png)] bg-cover bg-center flex items-center justify-center flex-row gap-4 h-[15vw] w-[15vw] bg-white rounded-full'>
+                    
                 </div>
-                <div className='flex items-center justify-center flex-row gap-4 h-[5vw] w-[5vw] bg-white rounded-full'>
-                    <img src="" alt="" />
+                <div className=' bg-[url(/seventh.png)] bg-cover bg-center flex items-center justify-center flex-row gap-4 h-[15vw] w-[15vw] bg-white rounded-full'>
+                    
                 </div>
-                <div className='flex items-center justify-center flex-row gap-4 h-[5vw] w-[5vw] bg-white rounded-full'>
-                    <img src="" alt="" />
+                <div className=' bg-[url(/fifth.png)] bg-cover bg-center flex items-center justify-center flex-row gap-4 h-[15vw] w-[15vw] bg-white rounded-full'>
+                    
                 </div>
-                <div className='flex items-center justify-center flex-row gap-4 h-[5vw] w-[5vw] bg-white rounded-full'>
-                    <img src="" alt="" />
+                <div className=' bg-[url(/sixth.png)] bg-cover bg-center flex items-center justify-center flex-row gap-4 h-[15vw] w-[15vw] bg-white rounded-full'>
+                    
                 </div>
             </div>
         </div>
-        <div className='bg-[#FEF5E9] p-2'>
+        <div className='bg-[#FEF5E9] p-4'>
             <div>
                 <button className='bg-[#fede19] p-2 rounded-md font-bold text-[#4e220a]'>Fresh Delight</button>
             </div>
             <div className='text-[#4e220a] uppercase text-[6vw] font-bold p-2'>
                 <h1>FRESH SUPPLIES <span className='text-[#89B92D]'>ASSURE</span>  <br /> SUPERIOR MEALS </h1>
             </div>
-            <div>
-                <img src="" alt="" />
-                <img src="" alt="" />
-                <img src="" alt="" />
+            <div className='flex items-center gap-12 justify-center'>
+                <div className=' bg-[url(/1.png)] bg-cover bg-center w-[15vw] h-[20vw] rounded-xl bg-white'></div>
+                <div className='bg-[url(/2.png)] bg-cover bg-center w-[15vw] h-[20vw] rounded-xl bg-white'></div>
+                <div className='bg-[url(/3.png)] bg-cover bg-center w-[15vw] h-[20vw] rounded-xl bg-white'></div>
             </div>
         </div>
         <div className='bg-[#123b15] flex items-center justify-center flex-col gap-[10vw] text-center p-2 pb-3'>
+            <div className='bg-[url(/second.png)] bg-cover bg-center w-[10vw] h-[10vw] bg-white absolute rounded-full mt-[20%]'></div>
             <div>
                 <h1 className='uppercase font-bold text-[3.3vw] text-[#cbf38c]'>
                 Wholesome meals 🍛 fuel lives, <br />
@@ -105,15 +106,13 @@ function Home() {
             </div>
         </div>
         <div className='bg-[#fede19] flex items-center justify-center flex-col gap-[10vw] text-center p-2 pb-3'>
+        {/* <div className='bg-[url(/5.svg)] bg-cover bg-center w-[30vw] h-[30vw]  absolute rounded-full ml-[90%]'></div> */}
             <div>
-                <h1 className=' font-bold text-[3.3vw] text-[#4e220a]'>
-                Meet the high nutrition plates
+                <h1 className=' uppercase font-bold text-[3.3vw] text-[#4e220a]'>
+               From the <span className='text-[#fd5c26]'>Society</span> to the <span className='text-[#fd5c26]'>society</span> by the <span className='text-[#fd5c26]'>Society </span> 
                 </h1>
             </div>
-            <div className='flex items-center gap-[20vw]'>
-                <button className='bg-[#fd5c26] p-2 text-white rounded text-[1.3vw] font-bold'>Explore Recipe</button>
-                <button className='bg-white p-2 text-[#4e220a] rounded text-[1.3vw] font-bold'>Order FoodBridge</button>
-            </div>
+            
         </div>
     </div>
   )
