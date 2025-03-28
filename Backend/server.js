@@ -4,6 +4,8 @@ import cors from "cors";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { connectDB } from "./config/db.js";
+import uploadRouter from "./routes/cloudinary.router.js";
+import Pusher from "pusher";
 
 import { PORT } from "../Backend/config/env.js";
 import ngoRouter from "./routes/ngo.routes.js";
@@ -15,16 +17,41 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
+const pusher = new Pusher({
+  appId: process.env.PUSHER_APP_ID,
+  key: process.env.PUSHER_APP_KEY,
+  secret: process.env.PUSHER_APP_SECRET,
+  cluster: process.env.PUSHER_APP_CLUSTER,
+  useTLS: true,
+})
+
+app.use("/api/upload", uploadRouter);
+
 app.use("/api/v1/ngo", ngoRouter);
 app.use("/api/v1/hotel", hotelRouter);
 app.use(cors());
 
 app.get("/", (req, res) => res.send("API Running..."));
 
-app.post("/restregister", (req, res) => {});
+app.post("/restregister", (req, res) => { });
 
-app.post("/restlogin", (req, res) => {});
+app.post("/restlogin", (req, res) => { });
 app.get("/", (req, res) => res.send("Welcome to backend of foodbride"));
+app.get('/notification', (req, res) => {
+  res.sendFile(Path.join(__dirname, 'notification.html'));
+});
+
+app.post('/sent-notification', (req, res) => {
+  const { message, recipient } = req.body;
+  pusher.trigger('notifications', 'new-notification', {
+    message: message,
+    recipient: recipient
+  })
+  res.status(200).json({
+    success: true,
+    message: 'Notification sent successfully',
+  });
+})
 
 //const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
