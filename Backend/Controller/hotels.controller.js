@@ -1,59 +1,154 @@
 import Hotels from "../models/hotels.model.js";
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { jwt_secret } from "../config/env.js";
+export const signUpHotel = async (req, res, next) => {
+  // implement signup logic here
 
-export const createHoteluser = async (req, res) => {
-    const hotel = req.body;
+  // what is req body ---> req.body is an object containing data from the client ( POST Request)'
 
-    if (!hotel.hotelname || !hotel.ownername || !hotel.email || !hotel.phone || !hotel.address || !hotel.fssai || !hotel.password) {
-        return res.status(400).json({ status: "error", message: "All fields are required" });
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const { hotelname, email, password, ownername, phone, address, fssai } =
+      req.body;
+
+    // check if a user already exists
+    const existingUser = await Hotels.findOne({ email });
+
+    if (existingUser) {
+      const error = new Error("User already exists");
+      error.statusCode = 409;
+      throw error;
+    }
+    // Hash password --=> Securing the password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const newUser = await Hotels.create(
+      [
+        {
+          hotelname,
+          ownername,
+          email,
+          phone,
+          address,
+          fssai,
+          password: hashedPassword,
+        },
+      ],
+      { session }
+    );
+
+    const token = jwt.sign({ userId: newUser[0]._id }, jwt_secret, {
+      expiresIn: "1d",
+    });
+    ///
+    await session.commitTransaction();
+
+    session.endSession();
+
+    res.status(201).json({
+      success: true,
+      message: "User created Successfully",
+      data: {
+        token,
+        user: newUser[0],
+      },
+    });
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    next(error);
+  }
+};
+
+export const signinHotel = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const hotel = await Hotels.findOne({ email });
+    if (!hotel) {
+      const error = new Error("Hotel not Found");
+      error.statusCode = 404;
+      throw error;
     }
 
-    const newHoteluser = new Hotels(hotel);
+    const isPasswordValid = await bcrypt.compare(password, hotel.password);
 
-    try {
-        await newHoteluser.save();
-        res.status(201).json({ status: "success", hotel: newHoteluser });
-    } catch (error) {
-        res.status(500).json({ status: "error", message: error.message });
+    if (!isPasswordValid) {
+      const error = new Error("Invalid Password");
+      error.statusCode = 401;
+      throw error;
     }
-}
+    console.log(hotel);
+    const token = jwt.sign({ hotelname: hotel._id }, jwt_secret, {
+      expiresIn: "1d",
+    });
 
-export const getHoteluser = async (req, res) => {
-    try {
-        const hotel = await Hotels.find();
-        res.status(200).json({ status: "success", hotel });
-    } catch (error) {
-        res.status(500).json({ status: "error", message: "error in fetching products" });
-    }
-}
+    res.status(200).json({
+      status: "success",
+      message: "User signed in SuccessFully",
+      data: {
+        token,
+        hotel,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const updateHoteluser = async (req, res) => {
-    const { id } = req.params;
+  const { id } = req.params;
+  const hotelData = req.body;
 
-    const hotel = req.body;
+  if (!id) {
+    return res
+      .status(400)
+      .json({ status: "error", message: "Hotel ID is required" });
+  }
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({ status: "error", message: "Invalid hotel id" });
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res
+      .status(400)
+      .json({ status: "error", message: "Invalid hotel ID" });
+  }
+
+  if (!Object.keys(hotelData).length) {
+    return res
+      .status(400)
+      .json({ status: "error", message: "No data provided for update" });
+  }
+
+  try {
+    const updatedHotel = await Hotels.findByIdAndUpdate(id, hotelData, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedHotel) {
+      return res
+        .status(404)
+        .json({ status: "error", message: "Hotel not found" });
     }
 
-    try {
-        const updatedHotel = await Product.findByIdAndUpdate(id, hotel, { new: true });
-        res.status(200).json({ status: "success", product: updatedHotel });
-    } catch (error) {
-        res.status(500).json({ status: "error", message: "error in updating Hotel" });
-    }
-}
-
-export const deleteHoteluser = async (req, res) => {
-    const { id } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({ status: "error", message: "Invalid Hotel id" });
-    }
-
-    try {
-        await Product.findByIdAndDelete(id);
-        res.status(200).json({ status: "success", message: "Hotel deleted successfully" });
-    } catch (error) {
-        res.status(500).json({ status: "error", message: "error in deleting Hotel" });
-    }
-}
+    res.status(200).json({ status: "success", hotel: updatedHotel });
+  } catch (error) {
+    console.error("Error occurred:", error.message);
+    res.status(500).json({
+      status: "error",
+      message: "Error updating hotel",
+      error: error.message,
+    });
+  }
+};
+export const logouthotel = async (req, res) => {
+  try {
+    res.status(200).json({ message: "User logged out successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+};
