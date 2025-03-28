@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/iamAnuragmehta/FoodBridge#readme",
   "dependencies": {
-    "dotenv": "^16.4.7"
+    "dotenv": "^16.4.7",
+    "jsonwebtoken": "^9.0.2"
   }
 }
