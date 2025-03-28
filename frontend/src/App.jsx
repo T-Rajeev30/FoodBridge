@@ -11,11 +11,7 @@ function App() {
 
   return (
     <>
-      <Header/>
-      <Whyus/>
-      {/* <Contact/>  */}
-      <Home/>
-      <Footer/>
+      
     </>
   )
 }
