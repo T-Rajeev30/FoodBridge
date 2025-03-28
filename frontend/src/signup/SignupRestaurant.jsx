@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-
+import { useNavigate } from "react-router-dom";
 
 
 const SignupRestaurant = () => {
@@ -10,26 +10,23 @@ const SignupRestaurant = () => {
   const [address, setAddress] = useState("");
   const [document, setDocument] = useState(null);
   const [owName, setOwName] = useState("");
-  const [fssai, setFssai] = useState("")
+  const [fssai, setFssai] = useState("");
+  const navigate = useNavigate();
 
 
   const handleSignup = async (e) => {
-
+    
     // alert("Resturant Registered!");
   }
   return (
     <>
 
-      <div className='bg-[#fede19] w-[100%] h-screen overflow-y-hidden'>
-
-
-        <h1 className=' text-[#4e220a] text-2xl font-bold m-0 p-0'>FOODBRIDGE</h1>
-
-        <div className=' bg-[#fede19] flex justify-center items-center h-[90%]'>
+      <div className='bg-[#98d0f8] w-[100%] h-screen overflow-y-hidden'>
+        <div className=' bg-[#98d0f8] flex justify-center items-center h-[90%]'>
 
           <div className=' bg-white py-1 rounded-3xl w-[55%]'>
 
-            <h2 className='text-2xl text-[#4e220a] font-semibold text- text-center mb-6 mt-0 pt-0 '>Restaurant Sign Up</h2>
+            <h2 className='text-2xl text-[#4e220a] font-semibold text- text-center mb-6 mt-0 pt-3 '>Restaurant Sign Up</h2>
 
             <form className='h- 
             flex flex-col gap-4 px-20 py-4' onSubmit={handleSignup}>
@@ -55,14 +52,14 @@ const SignupRestaurant = () => {
           
               </span>
 
-              <button className='bg-[#4e220a] text-white py-4 rounded-full w-[50%] self-center' type='submit'>Sign Up</button>
+              <button onClick={() => navigate("/RestaurantDashboard")} className='bg-[#4e220a] text-white py-4 rounded-full w-[50%] self-center' type='submit'>Sign Up</button>
 
             </form>
             
           </div>
           
         </div>
-        <img src="/signup.svg" alt="" className='absolute bottom-4 left-2 w-20 h-15' />
+        <img src="/second.png" alt="" className='absolute bottom-4 left-2 w-[20vw] h-[20vw]' />
       </div>
       
     </>

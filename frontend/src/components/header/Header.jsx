@@ -42,9 +42,21 @@ function Header() {
             </ul>
            
             <nav className='flex items-center gap-5'>
-                <button className='border-2 h-[3vw] border-[#4E220A] rounded-xl p-1 text-[1.2vw] font-medium w-[10vw]'>Login</button>
-                <button className=' text-white h-[3vw] bg-[#4E220A] rounded-xl p-1 font-medium text-[1.2vw] w-[10vw]'>Join as NGO</button>
-                <button className=' text-white  h-[3vw] bg-[#4E220A] rounded-xl p-1 font-medium text-[1.2vw] w-[10vw]'>Resturant</button>
+                <Link
+                to="loginngo"
+                className="border-2 h-[3vw] border-[#4E220A] rounded-xl text-[1.2vw] font-medium w-[10vw] flex items-center justify-center"
+                >
+                Login
+                </Link>
+
+                {/* <button className='border-2 h-[3vw] border-[#4E220A] rounded-xl p-1 text-[1.2vw] font-medium w-[10vw]'>Login</button> */}
+                <Link to="SignupNgo" className=' text-white h-[3vw] bg-[#4E220A] rounded-xl p-1 font-medium text-[1.2vw] w-[10vw] flex items-center justify-center' >
+                Join as NGO
+                </Link>
+                <Link to="SignupRestaurant" className=' text-white h-[3vw] bg-[#4E220A] rounded-xl p-1 font-medium text-[1.2vw] w-[10vw] flex items-center justify-center' >
+                Resturant
+                </Link>
+                
             </nav>
         </nav>
     </nav>

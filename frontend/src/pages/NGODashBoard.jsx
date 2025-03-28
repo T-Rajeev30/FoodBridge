@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 const NGODashBoard = () => {
   const [foodItems, setFoodItems] = useState([]);
+  const [claimAmount, setClaimAmount] = useState({});
 
   useEffect(() => {
     const storedFoodItems = JSON.parse(localStorage.getItem("foodItems")) || [];
@@ -10,20 +11,23 @@ const NGODashBoard = () => {
 
   const handleClaim = (index) => {
     const updatedFoodItems = [...foodItems];
+    const amountToClaim = claimAmount[index] ? parseInt(claimAmount[index]) : 1;
 
-    if (updatedFoodItems[index].quantity > 1) {
-      updatedFoodItems[index].quantity -= 1; // Reduce quantity by 1
+    if (updatedFoodItems[index].quantity >= amountToClaim) {
+      updatedFoodItems[index].quantity -= amountToClaim;
+      if (updatedFoodItems[index].quantity === 0) {
+        updatedFoodItems[index].claimed = true;
+      }
+      setFoodItems(updatedFoodItems);
+      localStorage.setItem("foodItems", JSON.stringify(updatedFoodItems));
+      alert("Food claimed successfully!");
     } else {
-      updatedFoodItems[index].claimed = true; // Mark as claimed when quantity is 0
+      alert("Not enough quantity available!");
     }
-
-    setFoodItems(updatedFoodItems);
-    localStorage.setItem("foodItems", JSON.stringify(updatedFoodItems));
-    alert("Food claimed successfully!");
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen flex flex-col items-center p-6">
+    <div className="bg-gray-100 min-h-screen flex pt-[10%] flex-col items-center p-6">
       <h2 className="text-3xl font-bold mb-4">NGO Dashboard - Available Food</h2>
       
       {foodItems.length === 0 ? (
@@ -43,10 +47,21 @@ const NGODashBoard = () => {
               <p><strong>Expiry:</strong> {food.expiry}</p>
               
               {!food.claimed ? (
-                <button className="mt-2 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
-                  onClick={() => handleClaim(index)}>
-                  Claim 1 Portion
-                </button>
+                <div className="mt-3">
+                  <input 
+                    type="number" 
+                    min="1" 
+                    max={food.quantity} 
+                    className="border p-2 rounded w-20 mr-2"
+                    placeholder="Qty" 
+                    onChange={(e) => setClaimAmount({...claimAmount, [index]: e.target.value})} 
+                  />
+                  <button 
+                    className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+                    onClick={() => handleClaim(index)}>
+                    Claim Food
+                  </button>
+                </div>
               ) : (
                 <p className="text-green-600 font-semibold">✅ Fully Claimed</p>
               )}
