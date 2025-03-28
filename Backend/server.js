@@ -10,13 +10,16 @@ import ngoRouter from "./routes/ngo.routes.js";
 import hotelRouter from "./routes/hotels.routes.js";
 import Nauthorize from "./middleware/ngo.auth.middleware.js";
 import Hauthorize from "./middleware/hotel.auth.middleWare.js";
+import arcjetMiddleware from "./middleware/arcjet.middleware.js";
 dotenv.config();
 
 const app = express();
 app.use(express.json());
+// app.use(arcjetMiddleware);
 
 app.use("/api/v1/ngo", ngoRouter);
 app.use("/api/v1/hotel", hotelRouter);
+
 app.use(cors());
 
 app.get("/", (req, res) => res.send("API Running..."));
