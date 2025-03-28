@@ -1,59 +1,157 @@
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { jwt_secret } from "../config/env.js";
 import NGO from "../models/ngo.model.js";
 
-export const createNGOuser = async (req, res) => {
-    const ngo = req.body;
+// NGO Signup Controller
+export const signUpNGO = async (req, res, next) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-    if (!ngo.name || !ngo.email || !ngo.phone || !ngo.address || !ngo.ngoregistrationnumber || !ngo.password ) {
-        return res.status(400).json({ status: "error", message: "All fields are required" });
+  try {
+    const { name, email, phone, address, ngoregistrationnumber, password } =
+      req.body;
+    // Check if a user already exists
+    const existingUser = await NGO.findOne({ email });
+
+    console.log(NGO.findOne({ email }));
+    if (existingUser) {
+      const error = new Error("User already exists");
+      error.statusCode = 409;
+      throw error;
     }
 
-    const newNGOuser = new NGO(ngo);
+    // Hash password for security
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-    try {
-        await newNGOuser.save();
-        res.status(201).json({ status: "success", ngo: newNGOuser });
-    } catch (error) {
-        res.status(500).json({ status: "error", message: error.message });
+    // Create new NGO user
+    const newUser = await NGO.create(
+      [
+        {
+          name,
+          email,
+          phone,
+          address,
+          ngoregistrationnumber,
+          password: hashedPassword,
+        },
+      ],
+      { session }
+    );
+
+    const token = jwt.sign({ userId: name._id }, jwt_secret, {
+      expiresIn: "1d",
+    });
+
+    await session.commitTransaction();
+    session.endSession();
+
+    res.status(201).json({
+      success: true,
+      message: "NGO registered successfully",
+      data: {
+        token,
+        user: newUser[0],
+      },
+    });
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    next(error);
+  }
+};
+
+// NGO Signin Controller
+export const signinNGO = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const ngo = await NGO.findOne({ email });
+
+    if (!ngo) {
+      const error = new Error("NGO not found");
+      error.statusCode = 404;
+      throw error;
     }
-}
 
-export const getNGOuser = async (req, res) => {
-    try {
-        const ngo = await NGO.find();
-        res.status(200).json({ status: "success", ngo });
-    } catch (error) {
-        res.status(500).json({ status: "error", message: "error in fetching products" });
-    }
-}
+    const isPasswordValid = await bcrypt.compare(password, ngo.password);
 
-export const updateNGOuser = async (req, res) => {
-    const { id } = req.params;
-
-    const ngo = req.body;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({ status: "error", message: "Invalid NGO id" });
+    if (!isPasswordValid) {
+      const error = new Error("Invalid password");
+      error.statusCode = 401;
+      throw error;
     }
 
-    try {
-        const updatedNGO = await Product.findByIdAndUpdate(id, ngo, { new: true });
-        res.status(200).json({ status: "success", product: updatedNGO });
-    } catch (error) {
-        res.status(500).json({ status: "error", message: "error in updating NGO" });
-    }
-}
+    const token = jwt.sign({ userId: ngo._id }, jwt_secret, {
+      expiresIn: "1d",
+    });
 
-export const deleteNGOuser = async (req, res) => {
-    const { id } = req.params;
+    res.status(200).json({
+      success: true,
+      message: "NGO signed in successfully",
+      data: {
+        token,
+        ngo,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({ status: "error", message: "Invalid NGO id" });
+// Update NGO Profile
+export const updateNGO = async (req, res) => {
+  const { id } = req.params;
+  const ngoData = req.body;
+
+  if (!id) {
+    return res
+      .status(400)
+      .json({ success: false, message: "NGO ID is required" });
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ success: false, message: "Invalid NGO ID" });
+  }
+
+  if (!Object.keys(ngoData).length) {
+    return res
+      .status(400)
+      .json({ success: false, message: "No data provided for update" });
+  }
+
+  try {
+    const updatedNGO = await NGO.findByIdAndUpdate(id, ngoData, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedNGO) {
+      return res.status(404).json({ success: false, message: "NGO not found" });
     }
 
-    try {
-        await Product.findByIdAndDelete(id);
-        res.status(200).json({ status: "success", message: "NGO deleted successfully" });
-    } catch (error) {
-        res.status(500).json({ status: "error", message: "error in deleting NGO" });
-    }
-}
+    res.status(200).json({ success: true, ngo: updatedNGO });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error updating NGO",
+      error: error.message,
+    });
+  }
+};
+
+// NGO Logout
+export const logoutNGO = async (req, res) => {
+  try {
+    res
+      .status(200)
+      .json({ success: true, message: "NGO logged out successfully" });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
