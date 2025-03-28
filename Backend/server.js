@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { connectDB } from "./config/datab.js";
+import { connectDB } from "./config/db.js";
 
 import { PORT } from "../Backend/config/env.js";
 import ngoRouter from "./routes/ngo.routes.js";
@@ -19,18 +19,17 @@ app.use(cors());
 
 app.get("/", (req, res) => res.send("API Running..."));
 
-app.post("/restregister", (req, res) => {});
+app.post("/restregister", (req, res) => { });
 
-app.post("/restlogin", (req, res) => {});
+app.post("/restlogin", (req, res) => { });
 app.get("/", (req, res) => res.send("Welcome to backend of foodbride"));
 
-const PORT = process.env.PORT || 5000;
+//const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  connectDB();
-  console.log(`Server running on port ${PORT}`);
+    connectDB();
+    console.log("MongoDB Connected");
+    console.log(`Server running on port ${PORT}`);
 });
-app.listen(PORT, () =>
-  console.log(`Server running on port http://localhost:${PORT}`)
-);
+
 
 // Testing
