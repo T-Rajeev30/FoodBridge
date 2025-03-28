@@ -4,7 +4,6 @@ import cors from "cors";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { connectDB } from "./config/db.js";
-import uploadRouter from "./routes/cloudinary.router.js";
 import Pusher from "pusher";
 
 import { PORT } from "../Backend/config/env.js";
@@ -26,8 +25,6 @@ const pusher = new Pusher({
   cluster: process.env.PUSHER_APP_CLUSTER,
   useTLS: true,
 })
-
-app.use("/api/upload", uploadRouter);
 
 app.use("/api/v1/ngo", ngoRouter);
 app.use("/api/v1/hotel", hotelRouter);
