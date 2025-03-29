@@ -10,7 +10,7 @@ export const signUpNGO = async (req, res, next) => {
   session.startTransaction();
 
   try {
-    const { name, email, phone, address, ngoregistrationnumber, password } =
+    const { name, email, phone, address, ngoregistrationnumber, password, claimed } =
       req.body;
     // Check if a user already exists
     const existingUser = await NGO.findOne({ email });
@@ -36,6 +36,7 @@ export const signUpNGO = async (req, res, next) => {
           address,
           ngoregistrationnumber,
           password: hashedPassword,
+          claimed,
         },
       ],
       { session }
