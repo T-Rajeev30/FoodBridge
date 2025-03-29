@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { jwt_secret } from "../config/env.js";
+
 export const signUpHotel = async (req, res, next) => {
   // implement signup logic here
 
@@ -11,7 +12,7 @@ export const signUpHotel = async (req, res, next) => {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    const { hotelname, email, password, ownername, phone, address, fssai } =
+    const { hotelname, email, password, ownername, phone, address, fssai, image, contributions } =
       req.body;
 
     // check if a user already exists
@@ -35,7 +36,9 @@ export const signUpHotel = async (req, res, next) => {
           phone,
           address,
           fssai,
+          image,
           password: hashedPassword,
+          contributions,
         },
       ],
       { session }
@@ -143,6 +146,7 @@ export const updateHoteluser = async (req, res) => {
     });
   }
 };
+
 export const logouthotel = async (req, res) => {
   try {
     res.status(200).json({ message: "User logged out successfully" });

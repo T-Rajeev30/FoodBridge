@@ -26,6 +26,10 @@ const ngoSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    claimed: {
+      type: Number,
+      default: 0,
+    }
   },
   { timestamps: true }
 ); // createdAt, updatedAt

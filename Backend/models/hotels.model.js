@@ -26,10 +26,18 @@ const hotelsSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    image: {
+      type: String,
+      required: true,
+    },
     password: {
       type: String,
       required: true,
     },
+    contributions: {
+      type: Number,
+      default: 0,
+    }
   },
   { timestamps: true }
 ); // createdAt, updatedAt

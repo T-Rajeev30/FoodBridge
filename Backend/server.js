@@ -9,6 +9,7 @@ import Pusher from "pusher";
 import { PORT } from "../Backend/config/env.js";
 import ngoRouter from "./routes/ngo.routes.js";
 import hotelRouter from "./routes/hotels.routes.js";
+import volunteerRouter from "./routes/volunteer.route.js";
 import Nauthorize from "./middleware/ngo.auth.middleware.js";
 import Hauthorize from "./middleware/hotel.auth.middleWare.js";
 import arcjetMiddleware from "./middleware/arcjet.middleware.js";
@@ -28,6 +29,7 @@ const pusher = new Pusher({
 
 app.use("/api/v1/ngo", ngoRouter);
 app.use("/api/v1/hotel", hotelRouter);
+app.use("/api/v1/volunteer", volunteerRouter);
 
 app.use(cors());
 
