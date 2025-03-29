@@ -9,6 +9,10 @@ import { fileURLToPath } from "url"; // Required for __dirname in ES Modules
 import { PORT } from "./config/env.js"; // Fixed import path
 import ngoRouter from "./routes/ngo.routes.js";
 import hotelRouter from "./routes/hotels.routes.js";
+import volunteerRouter from "./routes/volunteer.route.js";
+import Nauthorize from "./middleware/ngo.auth.middleware.js";
+import Hauthorize from "./middleware/hotel.auth.middleWare.js";
+import arcjetMiddleware from "./middleware/arcjet.middleware.js";
 
 // Load environment variables
 dotenv.config();
@@ -40,6 +44,7 @@ const pusher = new Pusher({
 // Routes
 app.use("/api/v1/ngo", ngoRouter);
 app.use("/api/v1/hotel", hotelRouter);
+app.use("/api/v1/volunteer", volunteerRouter);
 
 app.get("/", (req, res) => res.send("Welcome to the backend of FoodBride"));
 
